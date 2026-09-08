@@ -1,0 +1,38 @@
+{
+  "protocol_version": 1,
+  "camera_backend": "edsdk",
+  "start_index": 0,
+  "end_index": null,
+  "resume": true,
+  "dry_run": false,
+  "cooldowns": {
+    "after_show_s": 0.0,
+    "after_af_s": 0.0,
+    "after_ready_before_shoot_s": 0.0,
+    "after_shoot_s": 0.0,
+    "after_ack_before_next_s": 0.0,
+    "shoot_retries": 3,
+    "skip_on_shoot_fail": true,
+    "batch_rest_every": 250,
+    "batch_rest_s": 0.5,
+    "checkpoint_every": 100,
+    "shutter_non_af": true,
+    "keep_liveview": false,
+    "post_download_pump_s": 0.05
+  },
+  "net": {
+    "host": "0.0.0.0",
+    "port": 8765,
+    "connect_timeout_s": 30.0,
+    "recv_timeout_s": 120.0,
+    "heartbeat_s": 30.0
+  },
+  "paths": {
+    "image_dir": "Datasets/images_watermarked",
+    "capture_root": "experiment/captures",
+    "session_root": "experiment/sessions",
+    "log_dir": "experiment/logs",
+    "shard_size": 500,
+    "edsdk_dll_dir": "experiment/EDSDK132011CD(13.20.21)/Windows/EDSDK_64/Dll"
+  }
+}
