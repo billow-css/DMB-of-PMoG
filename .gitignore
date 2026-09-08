@@ -25,11 +25,16 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# ===== 模型权重（大文件，best 权重建议用 GitHub Releases 分发）=====
+# ===== 模型权重 =====
+# 默认忽略所有权重；仅保留两个最优 checkpoint 进入版本控制
 *.pth
-models/
+models/*
 checkpoints/
 ckpts/
+
+# 放行两个最优权重（DMB 主模型 + ScreenShooting 基线）
+!models/Encoder_Decoder_Model_mask_ScreenShootingMB_best.pth
+!models/Encoder_Decoder_Model_mask_ScreenShooting_best.pth
 
 # ===== 数据集 =====
 Datasets/
