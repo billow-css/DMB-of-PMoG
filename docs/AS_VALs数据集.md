@@ -1,4 +1,4 @@
-# AS_VALs Dataset
+# AS_VALs 数据集
 
 **全称：ASCII VALs Dataset（ASCII 码变量数据集）**
 
@@ -8,9 +8,7 @@
 本数据集用于屏幕拍摄 / 运动模糊等失真实验中的**文本载体测试集**：白底黑字、固定画布、可控排版，便于观察几何与光学失真对字符结构的影响。
 
 生成脚本：`tools/generate_text_images.py`  
-输出目录：`AS_VALs/outputs/text_images/`  
-图像目录：`out/`  
-清单文件：`out/manifest.txt`
+输出目录：`AS_VALs/outputs/text_images/`（含 PNG 与 `manifest.txt`）
 
 ---
 
@@ -130,7 +128,7 @@ AS_VALs/
 └── matlab_motion_blur/            ← 旧路径兼容转发
 ```
 
-本文件路径：`docs/asvals/AS_VALs_Dataset.md`。
+本文件路径：`docs/AS_VALs数据集.md`。
 
 ---
 
@@ -152,7 +150,7 @@ python tools/generate_text_images.py
 | `MAX_CHARS_PER_LINE` | $6$ |
 | `MAX_LINES` | $2$ |
 
-重新生成会覆盖 `out/` 下 PNG 与 `manifest.txt`（请先备份）。
+重新生成会覆盖 `AS_VALs/outputs/text_images/` 下 PNG 与 `manifest.txt`（请先备份）。
 
 ---
 

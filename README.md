@@ -38,7 +38,7 @@
 2. **去掉光照验证项 `I`**：聚焦运动模糊这一主要退化，简化训练目标；
 3. 形成新噪声层 `ScreenShootingMB = ScreenShooting + Motion Blur`，作为默认训练/评估噪声层。
 
-数学表述见 [`docs/asvals/nonlinear_motion_blur_algorithm.md`](docs/asvals/nonlinear_motion_blur_algorithm.md)，
+数学表述见 [`docs/运动模糊噪声层.md`](docs/运动模糊噪声层.md)，
 可微实现见 [`AS_VALs/python_motion_blur/motion_blur.py`](AS_VALs/python_motion_blur/motion_blur.py)。
 
 ---
@@ -249,11 +249,12 @@ python rectify_gui.py     # 矫正 GUI
 
 | 文档 | 内容 |
 |:---|:---|
-| [`docs/运动模糊噪声层_保姆级讲解.md`](docs/运动模糊噪声层_保姆级讲解.md) | DMB 噪声层的直观讲解 |
-| [`docs/asvals/nonlinear_motion_blur_algorithm.md`](docs/asvals/nonlinear_motion_blur_algorithm.md) | 空变非线性运动模糊的数学表述 |
-| [`docs/asvals/非线性运动模糊方案_参数与实现.md`](docs/asvals/非线性运动模糊方案_参数与实现.md) | 参数区间与实现说明 |
-| [`docs/PIMoG_非线性运动模糊改进汇报.md`](docs/PIMoG_非线性运动模糊改进汇报.md) | 改进汇报 |
-| [`AS_VALs/README.md`](AS_VALs/README.md) | AS_VALs 实验说明 |
+| [`docs/运动模糊噪声层.md`](docs/运动模糊噪声层.md) | DMB 噪声层方案细则（算法、参数与实现） |
+| [`docs/联合噪声管线.md`](docs/联合噪声管线.md) | 运动模糊 + 拍屏失真的联合噪声管线 |
+| [`docs/AS_VALs数据集.md`](docs/AS_VALs数据集.md) | AS_VALs 文本载体数据集 |
+| [`docs/实验评估.md`](docs/实验评估.md) | 对照实验与评估 |
+| [`docs/README.md`](docs/README.md) | 文档索引 |
+| [`AS_VALs/README.md`](AS_VALs/README.md) | AS_VALs 资源说明 |
 
 ---
 

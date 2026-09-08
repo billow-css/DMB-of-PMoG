@@ -26,7 +26,7 @@ AS_VALs/
 | `outputs/text_images/` | `tools/generate_text_images.py` 输出 |
 | `outputs/demo_*` | demo 跑出来的图与 `run_info`，可删可归档 |
 
-文档见仓库 `docs/asvals/`；压缩包在 `reference/archives/`。
+文档见仓库 `docs/`。
 
 ## 常用命令
 
