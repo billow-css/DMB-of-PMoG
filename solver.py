@@ -60,8 +60,8 @@ from ckpt_utils import (
     normalize_ckpt_tag,
     resolve_ckpt_path,
 )
-from train_log import TrainRunLogger
-from train_ui import show_epoch_curves
+from ui.train_log import TrainRunLogger
+from ui.train_ui import show_epoch_curves
 
 
 class Solver(object):

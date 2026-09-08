@@ -400,7 +400,7 @@ def apply_mode_image_dirs(config: argparse.Namespace) -> argparse.Namespace:
             log_warn(
                 "当前 image_dir 像是 COCOMask 拼接图目录；"
                 "嵌入应使用左半边裁好的编号图（如 Datasets/images/）。"
-                "可运行: python export_coco_hosts.py"
+                "可运行: python tools/export_coco_hosts.py"
             )
     elif config.mode == "test_accuracy":
         if "--image_dir" not in sys.argv:
@@ -512,7 +512,7 @@ def run_tool_mode(mode: str, extra_args: list[str] | None = None) -> int:
         and "--no_interactive" not in sys.argv
         and "--ckpt" not in sys.argv
     ):
-        from verify_weights_ui import ckpt_args_from_paths, prompt_embed_verify_weights
+        from ui.verify_weights_ui import ckpt_args_from_paths, prompt_embed_verify_weights
 
         titles = {
             "tool_verify_psnr": "嵌入 PSNR — 选择权重",
@@ -594,7 +594,7 @@ def resolve_run_mode(config: argparse.Namespace) -> argparse.Namespace:
             and not config.no_interactive
             and "--eval_ckpt" not in sys.argv
         ):
-            from verify_weights_ui import (
+            from ui.verify_weights_ui import (
                 infer_noise_menu_choice_from_path,
                 prompt_single_weight_file,
             )
@@ -645,7 +645,7 @@ def resolve_run_mode(config: argparse.Namespace) -> argparse.Namespace:
             and config.distortion is None
         ):
             if getattr(config, "weight_path", None):
-                from verify_weights_ui import infer_noise_menu_choice_from_path
+                from ui.verify_weights_ui import infer_noise_menu_choice_from_path
 
                 if config.no_interactive:
                     choice = infer_noise_menu_choice_from_path(config.weight_path)
@@ -1033,7 +1033,7 @@ if __name__ == "__main__":
     if config.mode == "log_query":
         print_mode_badge("log_query")
         if getattr(config, "log_run", None):
-            from train_log import format_run_detail, load_run
+            from ui.train_log import format_run_detail, load_run
 
             try:
                 doc = load_run(config.log_dir, config.log_run)
@@ -1055,7 +1055,7 @@ if __name__ == "__main__":
     config = apply_lite_defaults(config)
 
     if config.mode == "train_mask":
-        from train_ui import edit_train_hparams, print_train_hparams
+        from ui.train_ui import edit_train_hparams, print_train_hparams
 
         # 基本菜单选完后 → 弹窗改超参 → 控制台打印明细 → 开训
         config = edit_train_hparams(config)

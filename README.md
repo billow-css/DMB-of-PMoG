@@ -78,7 +78,7 @@
 | `main.py` / `model.py` / `solver.py` | 训练与推理核心（入口 / 网络 / 训练求解器） |
 | `Noise_Layer.py` | 可微噪声层（`Identity` / `ScreenShooting` / `ScreenShootingMB`） |
 | `data_loader.py` / `cli_utils.py` / `ckpt_utils.py` | 数据加载 / CLI 与交互 / 权重解析 |
-| `train_ui.py` / `train_log.py` / `verify_weights_ui.py` | 训练弹窗 UI / 日志 / 权重校验 |
+| `ui/`（`train_ui.py` / `train_log.py` / `verify_weights_ui.py`） | 训练弹窗 UI / 日志 / 权重校验 |
 | `AS_VALs/python_motion_blur/` | **DMB 运动模糊核心**（`Noise_Layer` 依赖） |
 | `AS_VALs/demos/`、`AS_VALs/matlab_motion_blur/` | Python / MATLAB 演示 |
 | `tools/` | 数据准备与评估脚本（宿主导出 / PSNR / SSIM / 裁切） |

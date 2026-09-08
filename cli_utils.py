@@ -354,7 +354,7 @@ def prompt_run_mode(default_choice: str = "0") -> dict:
 
     # 评估 / 嵌入 / 测准：弹窗自选 .pth，再选噪声层
     if chosen["mode"] in ("eval_mask", "test_embedding", "test_accuracy") and can_ask:
-        from verify_weights_ui import (
+        from ui.verify_weights_ui import (
             infer_noise_menu_choice_from_path,
             prompt_single_weight_file,
         )
@@ -697,7 +697,7 @@ def prompt_log_browser(log_dir: str = "logs") -> int:
     int
         进程退出码（0=正常）。
     """
-    from train_log import (
+    from ui.train_log import (
         format_run_brief,
         format_run_detail,
         latest_pointer_path,
