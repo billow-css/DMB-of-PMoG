@@ -26,13 +26,14 @@ htmlcov/
 Thumbs.db
 
 # ===== 模型权重 =====
-# 默认忽略所有权重；仅保留两个最优 checkpoint 进入版本控制
+# 默认忽略所有权重；仅保留关键 checkpoint 进入版本控制
 *.pth
 models/*
 checkpoints/
 ckpts/
 
-# 放行两个最优权重（DMB 主模型 + ScreenShooting 基线）
+# 放行关键权重（99 基线 + DMB 主模型 + ScreenShooting 基线）
+!models/Encoder_Decoder_Model_mask_99.pth
 !models/Encoder_Decoder_Model_mask_ScreenShootingMB_best.pth
 !models/Encoder_Decoder_Model_mask_ScreenShooting_best.pth
 
