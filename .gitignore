@@ -61,5 +61,8 @@ AS_VALs/outputs/
 # ===== reference：压缩包（解压内容已存在）=====
 reference/archives/
 
+# ===== 拍屏参考项目：超大压缩包（354MB，解压内容已提交）=====
+Screen-Shooting Robust Watermark Based on Style Transfer and Structural Re-Parameterization/*.zip
+
 # ===== 其他生成图 =====
 exp/*.png

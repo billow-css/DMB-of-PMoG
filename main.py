@@ -118,6 +118,10 @@ def build_parser() -> argparse.ArgumentParser:
   # 工具：嵌入 PSNR / SSIM
   python main.py --mode tool_verify_psnr --no_interactive
   python main.py --mode tool_verify_both --no_interactive
+
+  # 统一评估（多模型对表，电脑模拟 / 拍屏模拟 / 嵌入）
+  python main.py --mode eval_unified --eh_mode sim --eh_models pimog,dmb_pmog,st_rep
+  python main.py --mode eval_unified --eh_mode test --eh_models pimog,dmb_pmog,st_rep
 """.strip(),
     )
 
@@ -273,11 +277,12 @@ def build_parser() -> argparse.ArgumentParser:
             "eval_mask",
             "test_accuracy",
             "test_embedding",
+            "eval_unified",
             *TOOL_MODE_CHOICES,
             "log_query",
             "quit",
         ],
-        help="运行模式；省略时交互面板（0–4 训练评估，5–9 工具，a–c 实验，l 日志）",
+        help="运行模式；省略时交互面板（0–4 训练评估，5–9 工具，a–c 实验，l 日志，u 统一评估）",
     )
     g_out.add_argument(
         "--log_run",
@@ -365,6 +370,51 @@ def build_parser() -> argparse.ArgumentParser:
         default="results/WatermarkMatrix/w.mat",
         help="水印矩阵 .mat 路径",
     )
+
+    # ---- 统一评估（eval_harness） ----
+    g_eh = parser.add_argument_group("统一评估 eval_harness（多模型对表）")
+    g_eh.add_argument(
+        "--eh_mode",
+        choices=["sim", "test", "embed"],
+        default="sim",
+        help="统一评估子模式：sim=电脑模拟 / test=拍屏模拟 / embed=嵌入水印 (默认: sim)",
+    )
+    g_eh.add_argument(
+        "--eh_models",
+        type=str,
+        default="pimog,dmb_pmog,st_rep",
+        help="逗号分隔模型名；可用: pimog,dmb_pmog,st_rep,stegastamp,ropass,sim2real",
+    )
+    g_eh.add_argument(
+        "--eh_device",
+        type=str,
+        default="auto",
+        help="设备：auto / cuda / cpu (默认: auto)",
+    )
+    g_eh.add_argument(
+        "--eh_weights",
+        type=str,
+        default=None,
+        help="name=path,name2=path2 覆盖各模型默认权重 .pth",
+    )
+    g_eh.add_argument(
+        "--eh_ckpt",
+        type=str,
+        default=None,
+        help="name=tag,name2=tag 选自研模型权重标签（99/ss_best/best/mb_best）",
+    )
+    g_eh.add_argument("--eh_seed", type=int, default=0, help="消息采样种子 (默认: 0)")
+    g_eh.add_argument(
+        "--eh_num_samples", type=int, default=None, help="每模型评估图像数 (默认: 全部)"
+    )
+    g_eh.add_argument(
+        "--eh_no_native_noise",
+        action="store_true",
+        help="sim 模式禁用各模型自带噪声层",
+    )
+    g_eh.add_argument("--eh_host_dir", type=str, default=None, help="宿主图目录（sim/embed）")
+    g_eh.add_argument("--eh_test_dir", type=str, default=None, help="拍屏矫正图目录（test）")
+    g_eh.add_argument("--eh_out_dir", type=str, default=None, help="报告输出目录")
 
     return parser
 
@@ -551,6 +601,27 @@ def run_tool_mode(mode: str, extra_args: list[str] | None = None) -> int:
     return code
 
 
+def run_eval_harness(config: argparse.Namespace) -> int:
+    """统一评估（eval_harness）入口：多模型对表，进程内调用 eval_harness.run。"""
+    from eval_harness.run import run_harness
+
+    print_mode_badge("eval_unified")
+    return run_harness(
+        mode=config.eh_mode,
+        models=config.eh_models,
+        device=config.eh_device,
+        host_dir=config.eh_host_dir or None,
+        test_dir=config.eh_test_dir or None,
+        msg_matrix=config.wmat_dir,
+        out_dir=config.eh_out_dir or None,
+        seed=config.eh_seed,
+        num_samples=config.eh_num_samples,
+        native_noise=not config.eh_no_native_noise,
+        weights=config.eh_weights,
+        ckpts=config.eh_ckpt,
+    )
+
+
 def resolve_run_mode(config: argparse.Namespace) -> argparse.Namespace:
     """
     决定运行模式。
@@ -565,6 +636,7 @@ def resolve_run_mode(config: argparse.Namespace) -> argparse.Namespace:
         if (
             config.mode == "quit"
             or config.mode == "log_query"
+            or config.mode == "eval_unified"
             or str(config.mode).startswith("tool_")
         ):
             return config
@@ -705,9 +777,12 @@ def resolve_run_mode(config: argparse.Namespace) -> argparse.Namespace:
 
     chosen = prompt_run_mode(default_choice="0")
     config.mode = chosen["mode"]
+    if "eh_mode" in chosen:
+        config.eh_mode = chosen["eh_mode"]
     if (
         config.mode == "quit"
         or config.mode == "log_query"
+        or config.mode == "eval_unified"
         or str(config.mode).startswith("tool_")
     ):
         return config
@@ -1047,6 +1122,9 @@ if __name__ == "__main__":
 
     if str(config.mode).startswith("tool_"):
         raise SystemExit(run_tool_mode(config.mode))
+
+    if config.mode == "eval_unified":
+        raise SystemExit(run_eval_harness(config))
 
     config = resolve_train_scale(config)
     if config.lite:

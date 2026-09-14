@@ -172,6 +172,7 @@ def print_mode_badge(mode: str) -> None:
         "train_mask": (_C.GREEN, "TRAIN", "Encoder–Noise–Decoder 端到端训练"),
         "test_embedding": (_C.CYAN, "EMBED", "预训练 Encoder 嵌入水印并导出拼图"),
         "test_accuracy": (_C.BLUE, "ACCURACY", "拍屏矫正图 Acc/BER + 相对含水印宿主 PSNR"),
+        "eval_unified": (_C.CYAN, "UNIFIED", "统一评估 eval_harness：多模型对表 sim/test/embed"),
         "tool_export_hosts": (_C.YELLOW, "TOOL", "从 COCOMask 导出宿主 → Datasets/images"),
         "tool_verify_psnr": (_C.YELLOW, "TOOL", "宿主嵌入 PSNR：弹窗选 1~2 个权重"),
         "tool_verify_ssim": (_C.YELLOW, "TOOL", "宿主嵌入 SSIM：弹窗选 1~2 个权重"),
@@ -253,6 +254,11 @@ def prompt_run_mode(default_choice: str = "0") -> dict:
         + f"    {_paint('4', _C.BLUE, _C.BOLD)}  拍屏测准    "
         + _paint("弹窗选 .pth · Acc/BER/PSNR", _C.DIM)
         + "\n"
+        + _paint("  【统一评估】", _C.BOLD, _C.WHITE)
+        + "\n"
+        + f"    {_paint('u', _C.CYAN, _C.BOLD)}  多模型对表  "
+        + _paint("eval_harness · sim/test/embed（PIMoG/DMB/ST-Rep）", _C.DIM)
+        + "\n"
         + _paint("  【工具】", _C.BOLD, _C.WHITE)
         + "\n"
         + f"    {_paint('5', _C.YELLOW, _C.BOLD)}  导出宿主    "
@@ -292,7 +298,7 @@ def prompt_run_mode(default_choice: str = "0") -> dict:
     print(menu, flush=True)
 
     can_ask = hasattr(sys.stdin, "isatty") and sys.stdin.isatty()
-    valid = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "l", "q"}
+    valid = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "l", "u", "q"}
     raw = _ask_choice(
         f"请选择 [默认 {default_choice}]: ",
         valid,
@@ -331,6 +337,7 @@ def prompt_run_mode(default_choice: str = "0") -> dict:
             "lite": False,
             "label": "4 — 拍屏测准",
         },
+        "u": {"mode": "eval_unified", "label": "u — 多模型对表（统一评估）"},
         "5": {"mode": "tool_export_hosts", "label": "5 — 导出宿主"},
         "6": {"mode": "tool_verify_psnr", "label": "6 — 嵌入 PSNR"},
         "7": {"mode": "tool_verify_ssim", "label": "7 — 嵌入 SSIM"},
@@ -350,6 +357,18 @@ def prompt_run_mode(default_choice: str = "0") -> dict:
 
     # 工具 / 实验 / 日志查询：不再追问权重与噪声层
     if str(chosen["mode"]).startswith("tool_") or chosen["mode"] == "log_query":
+        return chosen
+
+    # 统一评估：只追问 sim / test / embed 子模式（不追问权重/噪声层）
+    if chosen["mode"] == "eval_unified":
+        chosen["eh_mode"] = _ask_choice(
+            "统一评估子模式 1=sim(电脑模拟) 2=test(拍屏) 3=embed(嵌入) [默认 1]: ",
+            {"1", "2", "3"},
+            "1",
+            can_ask=can_ask,
+        )
+        chosen["eh_mode"] = {"1": "sim", "2": "test", "3": "embed"}[chosen["eh_mode"]]
+        log_ok(f"统一评估子模式：{chosen['eh_mode']}")
         return chosen
 
     # 评估 / 嵌入 / 测准：弹窗自选 .pth，再选噪声层
