@@ -178,6 +178,7 @@ def print_mode_badge(mode: str) -> None:
         "tool_verify_ssim": (_C.YELLOW, "TOOL", "宿主嵌入 SSIM：弹窗选 1~2 个权重"),
         "tool_verify_both": (_C.YELLOW, "TOOL", "宿主嵌入 PSNR+SSIM：弹窗选权重"),
         "tool_crop_panels": (_C.YELLOW, "TOOL", "从结果拼图裁切嵌入面板"),
+        "tool_sim_test": (_C.YELLOW, "TOOL", "仿真拍屏 sim_test：文件夹叠 PIMoG/DMB 噪声"),
         "tool_batch_rectify": (_C.BLUE, "EXP", "批量透视矫正（experiment/batch_rectify）"),
         "tool_rectify_gui": (_C.BLUE, "EXP", "交互透视矫正 GUI"),
         "tool_server_gui": (_C.BLUE, "EXP", "联机拍屏服务端 GUI"),
@@ -276,6 +277,9 @@ def prompt_run_mode(default_choice: str = "0") -> dict:
         + f"    {_paint('9', _C.YELLOW, _C.BOLD)}  裁切面板    "
         + _paint("结果拼图 → 嵌入图目录", _C.DIM)
         + "\n"
+        + f"    {_paint('s', _C.YELLOW, _C.BOLD)}  仿真拍屏    "
+        + _paint("sim_test · 文件夹叠 PIMoG/DMB 噪声", _C.DIM)
+        + "\n"
         + _paint("  【拍屏实验】", _C.BOLD, _C.WHITE)
         + "\n"
         + f"    {_paint('a', _C.BLUE, _C.BOLD)}  批量矫正    "
@@ -298,7 +302,7 @@ def prompt_run_mode(default_choice: str = "0") -> dict:
     print(menu, flush=True)
 
     can_ask = hasattr(sys.stdin, "isatty") and sys.stdin.isatty()
-    valid = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "l", "u", "q"}
+    valid = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "l", "u", "s", "q"}
     raw = _ask_choice(
         f"请选择 [默认 {default_choice}]: ",
         valid,
@@ -343,6 +347,7 @@ def prompt_run_mode(default_choice: str = "0") -> dict:
         "7": {"mode": "tool_verify_ssim", "label": "7 — 嵌入 SSIM"},
         "8": {"mode": "tool_verify_both", "label": "8 — 嵌入质量 (PSNR+SSIM)"},
         "9": {"mode": "tool_crop_panels", "label": "9 — 裁切面板"},
+        "s": {"mode": "tool_sim_test", "label": "s — 仿真拍屏 (sim_test)"},
         "a": {"mode": "tool_batch_rectify", "label": "a — 批量矫正"},
         "b": {"mode": "tool_rectify_gui", "label": "b — 矫正 GUI"},
         "c": {"mode": "tool_server_gui", "label": "c — 服务端 GUI"},

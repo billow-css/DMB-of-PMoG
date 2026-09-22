@@ -82,6 +82,7 @@
 | `AS_VALs/python_motion_blur/` | **DMB 运动模糊核心**（`Noise_Layer` 依赖） |
 | `AS_VALs/demos/`、`AS_VALs/matlab_motion_blur/` | Python / MATLAB 演示 |
 | `tools/` | 数据准备与评估脚本（宿主导出 / PSNR / SSIM / 裁切） |
+| `sim_test/` | 仿真拍屏：文件夹叠 PIMoG / DMB 噪声（替代人工翻拍） |
 | `experiment/` | 联机拍屏采集、透视矫正、GUI |
 | `models/` | 预训练权重（见 [预训练权重](#预训练权重)） |
 | `Datasets/` | 宿主图、嵌入图、Recover 等（未入库，自行准备） |

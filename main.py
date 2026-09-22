@@ -79,6 +79,7 @@ TOOL_MODE_CHOICES = (
     "tool_verify_ssim",
     "tool_verify_both",
     "tool_crop_panels",
+    "tool_sim_test",
     "tool_batch_rectify",
     "tool_rectify_gui",
     "tool_server_gui",
@@ -540,6 +541,7 @@ def run_tool_mode(mode: str, extra_args: list[str] | None = None) -> int:
         "tool_verify_ssim": (REPO_ROOT / "tools" / "verify_host_ssim.py", []),
         "tool_verify_both": (REPO_ROOT / "tools" / "verify_host_embed.py", ["--metric", "both"]),
         "tool_crop_panels": (REPO_ROOT / "tools" / "crop_embed_panels.py", []),
+        "tool_sim_test": (REPO_ROOT / "sim_test" / "sim_noise.py", []),
         "tool_batch_rectify": (REPO_ROOT / "experiment" / "batch_rectify.py", []),
         "tool_rectify_gui": (REPO_ROOT / "experiment" / "rectify_gui.py", []),
         "tool_server_gui": (REPO_ROOT / "experiment" / "server_gui.py", []),
@@ -582,6 +584,39 @@ def run_tool_mode(mode: str, extra_args: list[str] | None = None) -> int:
             + " | ".join(str(p) for p in picked)
             + ("（对照）" if len(picked) == 2 else "（单测）")
         )
+
+    # sim_test：交互询问输入/输出目录与噪声类型
+    if (
+        mode == "tool_sim_test"
+        and "--input_dir" not in extra
+        and "-i" not in extra
+        and "--no_interactive" not in sys.argv
+        and "--input_dir" not in sys.argv
+        and "-i" not in sys.argv
+    ):
+        can_ask = hasattr(sys.stdin, "isatty") and sys.stdin.isatty()
+        if can_ask:
+            try:
+                tip_i = "输入图像目录 [--input_dir，默认 Datasets/images_watermarked]: "
+                tip_o = "输出目录 [--output_dir，默认 sim_test/out]: "
+                tip_n = "噪声 1=PIMoG(ScreenShooting) 2=DMB(ScreenShootingMB) 3=both [默认 2]: "
+                raw_i = input(tip_i).strip() or "Datasets/images_watermarked"
+                raw_o = input(tip_o).strip() or "sim_test/out"
+                raw_n = input(tip_n).strip() or "2"
+            except (EOFError, KeyboardInterrupt):
+                print(flush=True)
+                log_warn("已取消 sim_test。")
+                return 130
+            noise_map = {"1": "PIMoG", "2": "DMB", "3": "both"}
+            noise = noise_map.get(raw_n, raw_n)
+            extra.extend(["--input_dir", raw_i, "--output_dir", raw_o, "--noise", noise])
+            log_ok(f"sim_test: in={raw_i} → out={raw_o} | noise={noise}")
+        else:
+            log_err(
+                "sim_test 需要 --input_dir / --output_dir。"
+                "例: python sim_test/sim_noise.py -i DIR -o DIR --noise DMB"
+            )
+            return 2
 
     cmd = [sys.executable, str(script), *preset, *extra]
     cwd = str(script.parent) if script.parent.name == "experiment" else str(REPO_ROOT)

@@ -66,3 +66,5 @@ Screen-Shooting Robust Watermark Based on Style Transfer and Structural Re-Param
 
 # ===== 其他生成图 =====
 exp/*.png
+sim_test/out*/
+sim_test/out_*/
