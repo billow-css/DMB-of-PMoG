@@ -126,6 +126,7 @@ class Solver(object):
 
         self.log_step = config.log_step
         self.model_save_step = config.model_save_step
+        self.save_policy = getattr(config, "save_policy", "all")
 
         # CLI / 输出选项（带默认值，兼容旧调用）
         self.show_progress = getattr(config, "show_progress", True)
@@ -1115,14 +1116,15 @@ class Solver(object):
                 ckpt_saved = None
                 # 本 run 目录：每个 epoch 都存（全量 / Lite 相同），互不覆盖其它 run
                 state = self.net.state_dict()
-                torch.save(state, path_epoch_run)
-                ckpt_saved = path_epoch_run
+                if self.save_policy != "best":
+                    torch.save(state, path_epoch_run)
+                    ckpt_saved = path_epoch_run
                 # 共享 distortion 目录：仍受 model_save_step 节流（便于旧续训路径）
-                if epoch % self.model_save_step == (self.model_save_step - 1):
+                if self.save_policy != "best" and epoch % self.model_save_step == (self.model_save_step - 1):
                     torch.save(state, path_epoch_shared)
-                if self.verbose:
+                if self.save_policy != "best" and self.verbose:
                     log_step(f"已保存: {path_epoch_run}")
-                elif not self.quiet and (
+                elif self.save_policy != "best" and not self.quiet and (
                     epoch == start_epoch or epoch + 1 == self.num_epoch
                 ):
                     log_info(f"已保存 epoch 权重: {path_epoch_run}")
@@ -1137,7 +1139,7 @@ class Solver(object):
                     f"{self.model_name}_mask_{self.distortion}_best.pth",
                 )
                 is_best = False
-                if bit_acc / 100.0 >= best_acc:
+                if self.save_policy != "epochs" and bit_acc / 100.0 >= best_acc:
                     best_acc = bit_acc / 100.0
                     best_epoch = int(epoch)
                     best_ckpt_path = path_best_run

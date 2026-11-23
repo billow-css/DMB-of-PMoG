@@ -37,8 +37,6 @@ import numpy as np
 import scipy.io as scio
 from torch.utils import data
 
-from cli_utils import log_info, log_ok, log_warn
-
 
 def _parse_wmat_index(filename: str) -> int:
     """
@@ -104,7 +102,7 @@ def select_lite_subset(
     """
     ratio = float(ratio)
     if ratio <= 0 or ratio > 1:
-        log_warn(f"lite_ratio={ratio} 非法，已夹紧到 (0, 1]")
+        print(f"lite_ratio={ratio} 非法，已夹紧到 (0, 1]")
         ratio = min(max(ratio, 1e-6), 1.0)
 
     n_total = len(paths)
@@ -112,7 +110,7 @@ def select_lite_subset(
     rng = np.random.RandomState(seed)
     indices = rng.choice(n_total, size=n_keep, replace=False)
     subset = sorted(paths[i] for i in indices)
-    log_ok(
+    print(
         f"Lite 子集: {n_keep}/{n_total} "
         f"({100.0 * n_keep / max(n_total, 1):.1f}%, seed={seed})"
     )
@@ -320,10 +318,10 @@ def get_loader(
     if lite:
         all_paths = _list_image_files(image_dir)
         img_paths = select_lite_subset(all_paths, ratio=lite_ratio, seed=lite_seed)
-        log_info(f"[{dataset}] Lite 加载: {image_dir} → {len(img_paths)} 张")
+        print(f"[{dataset}] Lite 加载: {image_dir} → {len(img_paths)} 张")
     else:
         n = len(_list_image_files(image_dir)) if os.path.isdir(image_dir) else 0
-        log_info(f"[{dataset}] 全量加载: {image_dir} → {n} 张")
+        print(f"[{dataset}] 全量加载: {image_dir} → {n} 张")
 
     if dataset in ("train_mask", "eval_mask"):
         # eval_mask：消息按 index 固定，避免「换噪声层 PSNR 差 0.01」的假象
@@ -336,7 +334,7 @@ def get_loader(
             message_seed=msg_seed,
         )
         if msg_seed is not None:
-            log_info(f"[{dataset}] 评估消息可复现（message_seed={msg_seed}）")
+            print(f"[{dataset}] 评估消息可复现（message_seed={msg_seed}）")
     elif dataset in ("test_accuracy", "test_embedding"):
         ds = ImageLoader_for_test(image_dir, image_size, w_path, img_paths=img_paths)
     else:

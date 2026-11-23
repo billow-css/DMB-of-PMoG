@@ -55,9 +55,6 @@ experiment/__pycache__/
 # 佳能 EDSDK 二进制 SDK（外置，勿提交；见 experiment/README 或 config）
 experiment/EDSDK132011CD(13.20.21)/
 
-# ===== AS_VALs：demo 生成产物（可重新生成，源码 python_motion_blur/ 保留）=====
-AS_VALs/outputs/
-
 # ===== reference：压缩包（解压内容已存在）=====
 reference/archives/
 

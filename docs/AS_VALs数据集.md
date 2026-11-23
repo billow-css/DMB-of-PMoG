@@ -7,8 +7,7 @@
 
 本数据集用于屏幕拍摄 / 运动模糊等失真实验中的**文本载体测试集**：白底黑字、固定画布、可控排版，便于观察几何与光学失真对字符结构的影响。
 
-生成脚本：`tools/generate_text_images.py`  
-输出目录：`AS_VALs/outputs/text_images/`（含 PNG 与 `manifest.txt`）
+图像规格见下文。生成脚本和 `AS_VALs/` 目录都已不在仓库里。
 
 ---
 
@@ -112,34 +111,17 @@ AS_VALs/outputs/text_images/manifest.txt
 
 ---
 
-## 6. 目录结构
+## 6. 目录
 
-```text
-AS_VALs/
-├── README.md
-├── python_motion_blur/            ← 核心库 motion_blur.py（训练依赖）
-├── demos/
-│   ├── python/                    ← PyTorch 演示
-│   └── matlab/                    ← MATLAB 对照
-├── outputs/
-│   ├── text_images/               ← 15k 合成图 + manifest.txt
-│   ├── demo_python/               ← Python demo 产物
-│   └── demo_matlab/               ← MATLAB demo 产物
-└── matlab_motion_blur/            ← 旧路径兼容转发
-```
+文字图原先放在 `AS_VALs/outputs/text_images/`。该目录已删除，噪声层不再依赖它。图像规格仍是下面这套。
 
 本文件路径：`docs/AS_VALs数据集.md`。
 
 ---
 
-## 7. 生成与复现
+## 7. 生成规格
 
-```bash
-# 在 AS_VALs 目录或仓库中执行
-python tools/generate_text_images.py
-```
-
-脚本常量（与当前仓库一致）：
+文字图已经生成在 `AS_VALs/outputs/text_images/`。当初的生成脚本不在仓库里，规格如下：
 
 | 常量 | 值 |
 |:---|:---:|
@@ -149,8 +131,6 @@ python tools/generate_text_images.py
 | `ENGLISH_RATIO` | $0.40$ |
 | `MAX_CHARS_PER_LINE` | $6$ |
 | `MAX_LINES` | $2$ |
-
-重新生成会覆盖 `AS_VALs/outputs/text_images/` 下 PNG 与 `manifest.txt`（请先备份）。
 
 ---
 
